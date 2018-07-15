@@ -14,7 +14,7 @@ def hello_world():
 def postJsonHandler():
     print (request.is_json)
     content = request.get_json()
-    #data = pd.io.json.json_normalize(content)
+    data = pd.io.json.json_normalize(content)
     #data.columns=['Record']#['Time','Record']
     # Peak points
     #data=data.Record
