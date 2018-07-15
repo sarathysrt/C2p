@@ -4,7 +4,7 @@ import json
 
 app = Flask(__name__)
 
-@app.route('/postjson1')
+@app.route('/')
 def hello_world():
   return 'Hello, World!'
 
