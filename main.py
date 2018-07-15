@@ -18,7 +18,7 @@ def postJsonHandler():
     #data=data.Record
     #aDict=Dm.Get_PQRS(data)
     #print (type(content))
-    return 'Hello, World!11'#json.dumps(aDict)#jsonify(content)
+    return jsonify(content)#json.dumps(aDict)#jsonify(content)
 
 if __name__ == '__main__':
   app.run()
