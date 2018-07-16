@@ -127,7 +127,8 @@ def Get_PQRS(data1):
     # step 1: Measurements filtering - 0-15 Hz band pass filter.
     signal_frequency = 100
     filtered_ecg_measurements = bandpass_filter(ecg_measurements, lowcut=0.0,highcut=15.0, signal_freq=signal_frequency,filter_order=1)
-    filtered_ecg_measurements[:5] = filtered_ecg_measurements[5]
+    # add this back when you add bandpass
+    #filtered_ecg_measurements[:5] = filtered_ecg_measurements[5]
 
     #step 2: Derivative - provides QRS slope information.
     differentiated_ecg_measurements = np.ediff1d(filtered_ecg_measurements)
