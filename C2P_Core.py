@@ -4,9 +4,14 @@ from scipy.signal import butter, lfilter
 import numpy as np
 def bandpass_filter( data, lowcut, highcut, signal_freq, filter_order):
     nyquist_freq = 0.5 * signal_freq
+    print('****')
+    print(nyquist_freq)
     low = lowcut / nyquist_freq
+    print(low)
     high = highcut / nyquist_freq
+    print(high)
     b, a = butter(filter_order, [low, high], btype="band")
+    print(b,a)
     y = lfilter(b, a, data)
     return y
 def Find_peak(data1,rolling=40,spacing=1.5):
