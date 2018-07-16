@@ -12,7 +12,8 @@ def bandpass_filter( data, lowcut, highcut, signal_freq, filter_order):
     #print(high)
     #b, a = butter(filter_order, [low, high], btype="band")
     #print(b,a)
-    #y = lfilter(b, a, data)   
+    #y = lfilter(b, a, data) 
+    
     y=data
     return y
 def Find_peak(data1,rolling=40,spacing=1.5):
