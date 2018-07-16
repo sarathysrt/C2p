@@ -20,6 +20,7 @@ def postJsonHandler():
     # Peak points
     data=np.array(data)
     aDict=Dm.Get_PQRS(data)
+    
     #print (type(content))
     return aDict#json.dumps(aDict)#jsonify(content)
 
