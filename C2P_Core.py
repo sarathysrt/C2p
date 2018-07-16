@@ -10,7 +10,8 @@ def bandpass_filter( data, lowcut, highcut, signal_freq, filter_order):
     print(low)
     high = highcut / nyquist_freq
     print(high)
-    b, a = butter(filter_order, [low, high], btype="band")
+    #b, a = butter(filter_order, [low, high], btype="band")
+    b, a = butter(filter_order, [0, 0.3], btype="band")
     print(b,a)
     y = lfilter(b, a, data)
     return y
