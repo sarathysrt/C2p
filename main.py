@@ -22,7 +22,7 @@ def postJsonHandler():
     aDict=Dm.Get_PQRS(data)
     
     #print (type(content))
-    return aDict#json.dumps(aDict)#jsonify(content)
+    return json.dumps(aDict)#jsonify(content)
 
 if __name__ == '__main__':
   app.run()
