@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jul 10 21:07:25 2018
-
-@author: V750679
-"""
-
-
 import bwr as bwr
 import pandas as pd
 from scipy.signal import butter, lfilter
@@ -153,8 +145,8 @@ def Get_PQRS(data1):
     QRS_Mean= round(np.mean([S_list[i]-Q_list[i] for i in range(len(Q_list))]))
     PQ_Mean= round(np.mean([Q_list[i]-P_list[i] for i in range(len(Q_list))]))
     
-    Qrs_seg=QRS_Mean/pps
-    PQ_seg=PQ_Mean/pps
+    Qrs_seg=str(round((QRS_Mean/pps),2))
+    PQ_seg=str(round((PQ_Mean/pps),2))
     bpm=round(60/(RR_Mean/(round(data_len*0.1))))
     
     aDict = {}
