@@ -18,7 +18,7 @@ def postJsonHandler():
     data = pd.io.json.json_normalize(content)
     #data.columns=['Record']#['Time','Record']
     # Peak points
-    #data=data.Record
+    data=np.array(data)
     aDict=Dm.Get_PQRS(data)
     #print (type(content))
     return jsonify(content)#json.dumps(aDict)#jsonify(content)
