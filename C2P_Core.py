@@ -3,18 +3,18 @@ import pandas as pd
 from scipy.signal import butter, lfilter
 import numpy as np
 def bandpass_filter( data, lowcut, highcut, signal_freq, filter_order):
-    #nyquist_freq = 0.5 * signal_freq
+    nyquist_freq = 0.5 * signal_freq
     #print('****')
     #print(nyquist_freq)
-    #low = lowcut / nyquist_freq
+    low = lowcut / nyquist_freq
     #print(low)
-    #high = highcut / nyquist_freq
+    high = highcut / nyquist_freq
     #print(high)
-    #b, a = butter(filter_order, [low, high], btype="band")
+    b, a = butter(filter_order, [low, high], btype="band")
     #print(b,a)
-    #y = lfilter(b, a, data) 
+    y = lfilter(b, a, data) 
     
-    y=data
+    #y=data
     return y
 def Find_peak(data1,rolling=40,spacing=1.5):
     data=pd.DataFrame(data1)
@@ -128,7 +128,7 @@ def Get_PQRS(data1):
     signal_frequency = 100
     filtered_ecg_measurements = bandpass_filter(ecg_measurements, lowcut=0.0,highcut=15.0, signal_freq=signal_frequency,filter_order=1)
     # add this back when you add bandpass
-    #filtered_ecg_measurements[:5] = filtered_ecg_measurements[5]
+    filtered_ecg_measurements[:5] = filtered_ecg_measurements[5]
 
     #step 2: Derivative - provides QRS slope information.
     differentiated_ecg_measurements = np.ediff1d(filtered_ecg_measurements)
