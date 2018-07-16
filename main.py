@@ -21,7 +21,7 @@ def postJsonHandler():
     data=np.array(data)
     #aDict=Dm.Get_PQRS(data)
     #print (type(content))
-    return jsonify(content)#json.dumps(aDict)#jsonify(content)
+    return json.dumps(aDict)#jsonify(content)
 
 if __name__ == '__main__':
   app.run()
