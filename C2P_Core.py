@@ -120,6 +120,64 @@ def Data_Correction(data,image_type,baseline):
     x1=np.min(ecg_measurements1)*-1
     Data = [x1+x for x in ecg_measurements1]
     return Data
+def T_peak(data,P_list,Q_list,R_list,S_list,Buffer_frequency,data_len):
+    t_corr_p_list=P_list-round(Buffer_frequency)
+    k=0
+    
+    for i in t_corr_p_list:
+        if(i<0):
+            t_corr_p_list[k]=0
+            k+=1
+        else:
+            k+=1
+    
+    #print(t_corr_p_list,P_list,Q_list,R_list,S_list)
+    ds=[]
+    k=0
+    for i in range(data_len):
+        if(i>S_list[k]):
+            if(k<len(S_list)-1):
+                k+=1
+    #print(k,len(S_list))
+        if(i>=t_corr_p_list[k] and i<=S_list[k]):
+            ds.append(0)
+        #ds.append(data[i]%2)
+        else:
+            ds.append(float(data[i])**2)
+            #print(float(data[i]))
+    
+
+    if(P_list[0]<Q_list[0] and P_list[0]<R_list[0] and P_list[0]<S_list[0]):
+        pk=[0 for x in range(P_list[0])]
+        ds[:P_list[0]]=pk
+    ps=[0 for x in range(len(ds[S_list[-1]:]))]
+    ds[S_list[-1]:data_len]=ps
+    #print(ds)
+    s=0
+    open_flag=0
+    first_flag=0
+    o_array=[]
+    c_array=[]
+
+    for k in ds:
+        if(k==0):
+            if(open_flag==1 and first_flag==1):
+                c_array.append(s-1)
+                first_flag=0
+            elif(open_flag==1):
+                ops=1
+            else:
+                open_flag=1
+            s+=1
+        else:
+            if(open_flag==1 and first_flag==0):
+                o_array.append(s)
+                first_flag=1
+            s+=1
+    print('A*')
+    #print(ds)
+    T_list = min_max_correction(ds,o_array,c_array,'max')
+    return T_list
 
 def Get_PQRS(data1):
     ecg_measurements=Data_Correction(data1,image_type='inverted',baseline='Yes')
@@ -148,6 +206,7 @@ def Get_PQRS(data1):
     R_list = min_max_correction(data,P_list,S_list,'max')
     Q_list = min_max_correction(data,P_list,R_list,'min')
     S_list = min_max_correction(data,S_list,trial_S_list,'min')
+    T_list=T_peak(data,P_list,Q_list,R_list,S_list,Buffer_frequency,data_len)
     
     RR_Mean= round(np.mean([R_list[i+1]-R_list[i] for i in range(len(R_list)-1)]))
     QRS_Mean= round(np.mean([S_list[i]-Q_list[i] for i in range(len(Q_list))]))
