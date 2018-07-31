@@ -232,9 +232,5 @@ def Get_PQRS(data1):
     aDict['PQ Segment length(Sec)'] = PQ_seg
     aDict['QT Segment length(Sec)'] = QT_seg
     aDict['ST Segment length(Sec)'] = ST_seg
-    aDict['P std(Sec)'] = PP_std
-    aDict['Q std(Sec)'] = QQ_std
-    aDict['R std(Sec)'] = RR_std
-    aDict['S std(Sec)'] = SS_std
-    aDict['T std(Sec)'] = TT_std
+    aDict['PQRST standard Dev'] = PP_std,QQ_std,RR_std,SS_std,TT_std
     return aDict
