@@ -2,6 +2,7 @@ import bwr as bwr
 import pandas as pd
 from scipy.signal import butter, lfilter
 import numpy as np
+import sys, os
 def bandpass_filter( data, lowcut, highcut, signal_freq, filter_order):
     #nyquist_freq = 0.5 * signal_freq
     #print('****')
@@ -233,4 +234,24 @@ def Get_PQRS(data1):
     aDict['QT Segment length(Sec)'] = QT_seg
     aDict['ST Segment length(Sec)'] = ST_seg
     aDict['PQRST standard Dev'] = PP_std,QQ_std,RR_std,SS_std,TT_std
+    return aDict
+
+def main_Call(data):
+    try:
+        aDict=Get_PQRS(data)
+    except Exception as e:
+        print(e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        aDict = {}
+        aDict['Heart rate (BPM)'] = '0.00'
+        aDict['QRS Segment length(Sec)'] = '0.00'
+        aDict['PQ Segment length(Sec)'] = '0.00'
+        aDict['QT Segment length(Sec)'] = '0.00'
+        aDict['ST Segment length(Sec)'] = '0.00'
+        aDict['PQRST standard Dev'] = ['0.00', '0.00', '0.00', '0.00', '0.00']
+        aDict['ErrorMessage'] = str(e)
+        aDict['ErrorLine'] = str(exc_tb.tb_lineno)
+        #aDict['ErrorType'] = str(exc_type)
     return aDict
