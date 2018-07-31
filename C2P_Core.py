@@ -214,12 +214,27 @@ def Get_PQRS(data1):
     QT_Mean= round(np.mean([T_list[i]-Q_list[i] for i in range(len(T_list))]))
     ST_Mean= round(np.mean([T_list[i]-S_list[i] for i in range(len(T_list))]))
     
+    PP_std= round(np.std([P_list[i+1]-P_list[i] for i in range(len(P_list)-1)]))
+    RR_std= round(np.std([R_list[i+1]-R_list[i] for i in range(len(R_list)-1)]))
+    QQ_std= round(np.std([Q_list[i+1]-Q_list[i] for i in range(len(Q_list)-1)]))
+    SS_std= round(np.std([S_list[i+1]-S_list[i] for i in range(len(S_list)-1)]))
+    TT_std= round(np.std([T_list[i+1]-T_list[i] for i in range(len(T_list)-1)]))
+    
     Qrs_seg=str(round((QRS_Mean/pps),2))
     PQ_seg=str(round((PQ_Mean/pps),2))
+    QT_seg=str(round((QT_Mean/pps),2))
+    ST_seg=str(round((ST_Mean/pps),2))
     bpm=round(60/(RR_Mean/(round(data_len*0.1))))
     
     aDict = {}
     aDict['Heart rate (BPM)'] = bpm
     aDict['QRS Segment length(Sec)'] = Qrs_seg
     aDict['PQ Segment length(Sec)'] = PQ_seg
+    aDict['QT Segment length(Sec)'] = QT_seg
+    aDict['ST Segment length(Sec)'] = ST_seg
+    aDict['P std(Sec)'] = PP_std
+    aDict['Q std(Sec)'] = QQ_std
+    aDict['R std(Sec)'] = RR_std
+    aDict['S std(Sec)'] = SS_std
+    aDict['T std(Sec)'] = TT_std
     return aDict
