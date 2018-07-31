@@ -211,6 +211,8 @@ def Get_PQRS(data1):
     RR_Mean= round(np.mean([R_list[i+1]-R_list[i] for i in range(len(R_list)-1)]))
     QRS_Mean= round(np.mean([S_list[i]-Q_list[i] for i in range(len(Q_list))]))
     PQ_Mean= round(np.mean([Q_list[i]-P_list[i] for i in range(len(Q_list))]))
+    QT_Mean= round(np.mean([T_list[i]-Q_list[i] for i in range(len(T_list))]))
+    ST_Mean= round(np.mean([T_list[i]-S_list[i] for i in range(len(T_list))]))
     
     Qrs_seg=str(round((QRS_Mean/pps),2))
     PQ_seg=str(round((PQ_Mean/pps),2))
