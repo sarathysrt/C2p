@@ -203,8 +203,10 @@ def Get_PQRS(data1):
     trial_S_list= S_list+Buffer_frequency#round(data_len*0.002)
     trial_P_list= Q_list-Buffer_frequency
     P_list = P_peak(data,Q_list)
+    #remove next line
+    P_list = min_max_correction(ecg_measurements,Q_list,trial_P_list,'max')
     
-    #P_list = min_max_correction(ecg_measurements,Q_list,trial_P_list,'max')
+    
     R_list = min_max_correction(data,P_list,S_list,'max')
     Q_list = min_max_correction(data,P_list,R_list,'min')
     S_list = min_max_correction(data,S_list,trial_S_list,'min')
@@ -237,18 +239,23 @@ def Get_PQRS(data1):
     P_overlap_T='False'
     
     aDict = {}
+    aParameter={}
+    #aHeartRythmn={}
+    aArrthymias={}
+    aBlocks={}
+    aIntervalCheck={}
 	
     if(0.11<=float(PR_seg)<=0.20 and 0.06<=float(Qrs_seg)<=0.10 and 0.36<=float(QT_seg)<0.44):
         sinus='Normal'
     else:
         sinus='Abnormal'
                         
-    if(bpm<130):
-        aDict['Heart Rate']='Medium'
-    if(130<bpm<160):
-        aDict['Heart Rate']='High'
-    if(bpm>160):
-        aDict['Heart Rate']='Critical'
+    #if(bpm<130):
+        #aDict['Heart Rate']='Medium'
+    #if(130<bpm<160):
+        #aDict['Heart Rate']='High'
+    #if(bpm>160):
+        #aDict['Heart Rate']='Critical'
 
 	#case 1
     if (PP_std<=10 and RR_std<=10 and 60<=bpm<=100 and sinus=='Normal'):
@@ -256,95 +263,105 @@ def Get_PQRS(data1):
         aDict['Heart Rhythm']='Normal sinus'
     else:
         aDict['Heart Rhythm']='Abnormal sinus'
+    
     #case 2
     if(PP_std>10):
-        aDict['Atrial Arrythmia']='Possible'
+        aArrthymias['Atrial Arrythmia']='Possible'
     else:
-        aDict['Atrial Arrythmia']='Not Applicable'
+        aArrthymias['Atrial Arrythmia']='Not Applicable'
     if(RR_std>10):
-        aDict['Ventricular Arrythmia']='Possible'
+        aArrthymias['Ventricular Arrythmia']='Possible'
     else:
-        aDict['Ventricular Arrythmia']='Not Applicable'
+        aArrthymias['Ventricular Arrythmia']='Not Applicable'
     if(bpm<60 and sinus=='Normal'):
-        aDict['Sinus Bradycardia']='Possible'
+        aArrthymias['Sinus Bradycardia']='Possible'
     else:
-        aDict['Sinus Bradycardia']='Not Applicable'
+        aArrthymias['Sinus Bradycardia']='Not Applicable'
     if(bpm>100 and sinus=='Normal'):
-        aDict['Sinus Tachardia']='Possible'       
+        aArrthymias['Sinus Tachardia']='Possible'       
     else:
-        aDict['Sinus Tachardia']='Not Applicable'
+        aArrthymias['Sinus Tachardia']='Not Applicable'
     
     #case3
     #if(150<bpmP<250 and PP_std<10 and P_overlap_T=='True' and 0.11<=PR_seg<=0.13 and 0.09<=Qrs_seg<=0.12 and 0.15<=QT_seg<=0.29):
-    #    aDict['Supraventricular Tachycrdia/Atrial Tachycardia']='Possible' 
+    #    aArrthymias['Supraventricular Tachycrdia/Atrial Tachycardia']='Possible' 
     #else:
-    #    aDict['Supraventricular Tachycrdia/Atrial Tachycardia']='Not Applicable'
+    #    aArrthymias['Supraventricular Tachycrdia/Atrial Tachycardia']='Not Applicable'
 
     
     if(250<bpmP<350 and 58<bpm<62 and PP_std<10 and 0.07<=float(Qrs_seg)<=0.09 ): # add PR and qt
-        aDict['Atrial Flutter']='Possible'
+        aArrthymias['Atrial Flutter']='Possible'
     else:
-        aDict['Atrial Flutter']='Not Applicable'
+        aArrthymias['Atrial Flutter']='Not Applicable'
     #if(128<bpm<132 and RR_std>10 and P_wave=='False' and 0.07<=Qrs_seg<=0.09): # add PR and qt
-    #    aDict['Atrial Fibrillation']='Possible'
+    #    aArrthymias['Atrial Fibrillation']='Possible'
     #else:
-    #    aDict['Atrial Fibrillation']='Not Applicable'
+    #    aArrthymias['Atrial Fibrillation']='Not Applicable'
+    
+    
     if(float(PR_seg)>0.20):
-        aDict['AV Block']='Possible'
-        aDict['Ischemia infraction']='Possible'
+        aBlocks['AV Block']='Possible'
+        aBlocks['Ischemia infraction']='Possible'
     else:
-        aDict['AV Block']='Not Applicable'
-        aDict['Ischemia infraction']='Not Applicable'
+        aBlocks['AV Block']='Not Applicable'
+        aBlocks['Ischemia infraction']='Not Applicable'
         
     if(PP_std<5 and RR_std<5): # increase in PR interval
-        aDict['AV Block']='Possible'
+        aBlocks['AV Block']='Possible'
     else:
-        aDict['AV Block']='Not Applicable'
-        
+        aBlocks['AV Block']='Not Applicable'
+      
     # pwave is absent ventricular tachycardia VT/V-tach
     
     if(0.06<=float(Qrs_seg)<=0.10):
-        aDict['QRS segment']='Normal'
+        aIntervalCheck['QRS segment']='Normal'
         #aDict['Bundle branch block/Left  Ventricular hyperthropy']='Not Possible'
     if(float(Qrs_seg)>0.10):
-        aDict['QRS segment']='Abnormal'
-        aDict['Bundle branch block']='Possible'
-        aDict['Left  Ventricular hyperthropy']='Possible'
+        aIntervalCheck['QRS segment']='Abnormal'
+        aIntervalCheck['Bundle branch block']='Possible'
+        aIntervalCheck['Left  Ventricular hyperthropy']='Possible'
     
     if(0.11<=float(Qrs_seg)<=0.12):
-        aDict['Bundle branch block']='Incomplete'
+        aIntervalCheck['Bundle branch block']='Incomplete'
     if(float(Qrs_seg)>0.12):
-        aDict['Bundle branch block']='Complete'
+        aIntervalCheck['Bundle branch block']='Complete'
     else:
-        aDict['Bundle branch block']='N/A'
+        aIntervalCheck['Bundle branch block']='N/A'
         
     if(0.12<=float(PR_seg)<=0.20):
-        aDict['PR segment']='Normal'
+        aIntervalCheck['PR segment']='Normal'
         
     else:
-        aDict['PR segment']='Abnormal'
-        aDict['Junctional arrhythmias']='Possible'
-        aDict['Pre-excitation Syndrome']='Possible'
+        aIntervalCheck['PR segment']='Abnormal'
+        aIntervalCheck['Junctional arrhythmias']='Possible'
+        aIntervalCheck['Pre-excitation Syndrome']='Possible'
         
     if(0.36<=float(QT_seg)<=0.44):
-        aDict['QT segment']='Normal'
+        aIntervalCheck['QT segment']='Normal'
     if(float(QT_seg)>0.44):
-        aDict['QT segment']='Abnormal'
-        aDict['Side effects of drugs (such as class I antiarrhythmics)']='Possible'
-        aDict['Electrolyte Imbalance']='Possible'
-        aDict['Congenital conduction - system defect']='Possible'
+        aIntervalCheck['QT segment']='Abnormal'
+        aIntervalCheck['Side effects of drugs (such as class I antiarrhythmics)']='Possible'
+        aIntervalCheck['Electrolyte Imbalance']='Possible'
+        aIntervalCheck['Congenital conduction - system defect']='Possible'
     if(float(QT_seg)<0.36):
-        aDict['QT segment']='Abnormal'
-        aDict['Digoxin Toxicity']='Possible'
-        aDict['Electrolyte Imbalance']='Possible'
-	
-	
-    aDict['Heart rate (BPM)'] = bpm
-    aDict['QRS Segment length(Sec)'] = Qrs_seg
-    aDict['PQ Segment length(Sec)'] = PQ_seg
-    aDict['QT Segment length(Sec)'] = QT_seg
-    aDict['ST Segment length(Sec)'] = ST_seg
-    aDict['PQRST standard Dev'] = PP_std,QQ_std,RR_std,SS_std,TT_std
+        aIntervalCheck['QT segment']='Abnormal'
+        aIntervalCheck['Digoxin Toxicity']='Possible'
+        aIntervalCheck['Electrolyte Imbalance']='Possible'
+
+    
+    aParameter['Heart rate (BPM)'] = bpm
+    aParameter['QRS Segment length(Sec)'] = Qrs_seg
+    aParameter['PQ Segment length(Sec)'] = PQ_seg
+    aParameter['QT Segment length(Sec)'] = QT_seg
+    aParameter['ST Segment length(Sec)'] = ST_seg
+    aParameter['PQRST standard Dev'] = PP_std,QQ_std,RR_std,SS_std,TT_std
+    
+    #aDict=aHeartRythmn
+    aDict['Parameters']=aParameter
+    aDict['Interval Check']=aIntervalCheck
+    aDict['Blocks']=aBlocks 
+    aDict['Arrythmia']=aArrthymias
+    
 	
 	
 	
@@ -360,34 +377,48 @@ def main_Call(data):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
         aDict = {}
-        aDict['Heart rate (BPM)'] = '0.00'
-        aDict['QRS Segment length(Sec)'] = '0.00'
-        aDict['PQ Segment length(Sec)'] = '0.00'
-        aDict['QT Segment length(Sec)'] = '0.00'
-        aDict['ST Segment length(Sec)'] = '0.00'
-        aDict['PQRST standard Dev'] = ['0.00', '0.00', '0.00', '0.00', '0.00']
+        aParameter={}
+        #aHeartRythmn={}
+        aArrthymias={}
+        aBlocks={}
+        aIntervalCheck={}
+        aParameter['Heart rate (BPM)'] = '0.00'
+        aParameter['QRS Segment length(Sec)'] = '0.00'
+        aParameter['PQ Segment length(Sec)'] = '0.00'
+        aParameter['QT Segment length(Sec)'] = '0.00'
+        aParameter['ST Segment length(Sec)'] = '0.00'
+        aParameter['PQRST standard Dev'] = ['0.00', '0.00', '0.00', '0.00', '0.00']
         aDict['ErrorMessage'] = str(e)
         aDict['ErrorLine'] = str(exc_tb.tb_lineno)
+        
         aDict['Heart Rhythm']='Not Applicable'
-        aDict['Atrial Arrythmia']='Not Applicable'
-        aDict['Ventricular Arrythmia']='Not Applicable'
-        aDict['Sinus Bradycardia']='Not Applicable'
-        aDict['Sinus Tachardia']='Not Applicable'       
-        aDict['Atrial Flutter']='Not Applicable'
-        aDict['AV Block']='Not Applicable'
-        aDict['Ischemia infraction']='Not Applicable'
-        aDict['QRS segment']='Not Applicable'
-        aDict['Bundle branch block']='Not Applicable'
-        aDict['Left  Ventricular hyperthropy']='Not Applicable'
-        aDict['Bundle branch block']='Not Applicable'
-        aDict['PR segment']='Not Applicable'
-        aDict['Junctional arrhythmias']='Not Applicable'
-        aDict['Pre-excitation Syndrome']='Not Applicable'
-        aDict['QT segment']='Not Applicable'
-        aDict['Side effects of drugs (such as class I antiarrhythmics)']='Not Applicable'
-        aDict['Electrolyte Imbalance']='Not Applicable'
-        aDict['Congenital conduction - system defect']='Not Applicable'
-        aDict['Digoxin Toxicity']='Not Applicable'
-        aDict['Electrolyte Imbalance']='Not Applicable'
+        
+        aArrthymias['Atrial Arrythmia']='Not Applicable'
+        aArrthymias['Ventricular Arrythmia']='Not Applicable'
+        aArrthymias['Sinus Bradycardia']='Not Applicable'
+        aArrthymias['Sinus Tachardia']='Not Applicable'       
+        aArrthymias['Atrial Flutter']='Not Applicable'
+        
+        aBlocks['AV Block']='Not Applicable'
+        aBlocks['Ischemia infraction']='Not Applicable'
+        
+        aIntervalCheck['QRS segment']='Not Applicable'
+        aIntervalCheck['Bundle branch block']='Not Applicable'
+        aIntervalCheck['Left  Ventricular hyperthropy']='Not Applicable'
+        aIntervalCheck['Bundle branch block']='Not Applicable'
+        aIntervalCheck['PR segment']='Not Applicable'
+        aIntervalCheck['Junctional arrhythmias']='Not Applicable'
+        aIntervalCheck['Pre-excitation Syndrome']='Not Applicable'
+        aIntervalCheck['QT segment']='Not Applicable'
+        aIntervalCheck['Side effects of drugs (such as class I antiarrhythmics)']='Not Applicable'
+        aIntervalCheck['Electrolyte Imbalance']='Not Applicable'
+        aIntervalCheck['Congenital conduction - system defect']='Not Applicable'
+        aIntervalCheck['Digoxin Toxicity']='Not Applicable'
+        aIntervalCheck['Electrolyte Imbalance']='Not Applicable'
+        
+        aDict['Parameters']=aParameter
+        aDict['Interval Check']=aIntervalCheck
+        aDict['Blocks']=aBlocks 
+        aDict['Arrythmia']=aArrthymias
         #aDict['ErrorType'] = str(exc_type)
     return aDict
