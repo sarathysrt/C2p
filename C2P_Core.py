@@ -204,7 +204,7 @@ def Get_PQRS(data1):
     trial_P_list= Q_list-Buffer_frequency
     P_list = P_peak(data,Q_list)
     #remove next line
-    P_list = min_max_correction(ecg_measurements,Q_list,trial_P_list,'max')
+    #P_list = min_max_correction(ecg_measurements,Q_list,trial_P_list,'max')
     
     
     R_list = min_max_correction(data,P_list,S_list,'max')
